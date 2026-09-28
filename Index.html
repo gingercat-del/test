@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dote Dating Preference Lab</title>
+  <meta name="description" content="Anonymous dating preferences, personal reflection, and aggregate dating-scene insights.">
+  <style>
+    :root {
+      --background: #ffffff;
+      --foreground: #362931;
+      --muted: #7f6873;
+      --line: #eadde3;
+      --panel: #ffffff;
+      --vanilla: #ffffff;
+      --rose: #8a6674;
+      --rose-dark: #654653;
+      --plum: #4b3440;
+      --teal: #c9acb7;
+      --teal-dark: #8a6674;
+      --coral: #9b7481;
+      --lemon: #f4edf0;
+      --cream: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(138, 102, 116, 0.08) 0 220px, transparent 220px),
+        var(--background);
+      color: var(--foreground);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button, select, input { font: inherit; }
+
+    .shell {
+      width: min(1240px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 14px 0 36px;
+    }
+
+    .nav, .tabs, .panel-heading, .bar-copy, .metric-grid, .hero-grid, .lens-layout, .dashboard-grid, .play-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .nav {
+      grid-template-columns: 90px 1fr;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: grid;
+      width: 76px;
+      height: 48px;
+      place-items: center;
+      border: 1px solid rgba(138, 102, 116, 0.34);
+      border-radius: 999px;
+      background: #ffffff;
+      color: var(--rose-dark);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+      box-shadow: 0 18px 46px rgba(101, 70, 83, 0.12);
+    }
+
+    .tabs {
+      justify-self: end;
+      grid-auto-flow: column;
+      gap: 6px;
+      min-height: 46px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #ffffff;
+    }
+
+    .tabs button {
+      min-width: 138px;
+      min-height: 36px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .tabs button.active {
+      background: var(--rose);
+      color: white;
+    }
+
+    .hero-grid {
+      grid-template-columns: minmax(0, 1fr) 390px;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--rose-dark);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 780px;
+      margin-bottom: 12px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.15rem, 4.8vw, 4.25rem);
+      line-height: 0.98;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.35rem, 2.6vw, 2.2rem);
+      line-height: 1.05;
+    }
+
+    h3 {
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .hero-copy, .muted {
+      color: var(--muted);
+      line-height: 1.48;
+    }
+
+    .panel, .metric, .hero-panel, .donut-card {
+      border: 1px solid rgba(138, 102, 116, 0.18);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 20px 55px rgba(101, 70, 83, 0.1);
+    }
+
+    .panel { padding: 16px; }
+
+    .hero-panel {
+      display: grid;
+      gap: 10px;
+      min-height: 190px;
+      padding: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .dating-scene {
+      position: relative;
+      min-height: 102px;
+      overflow: hidden;
+      border: 1px solid rgba(138, 102, 116, 0.14);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 16% 16%, rgba(138, 102, 116, 0.08), transparent 20%),
+        linear-gradient(135deg, #ffffff, rgba(138, 102, 116, 0.1));
+    }
+
+    .scene-line {
+      position: absolute;
+      right: -14px;
+      bottom: 24px;
+      left: 22px;
+      height: 1px;
+      background: rgba(138, 102, 116, 0.38);
+      transform: rotate(-7deg);
+    }
+
+    .person-card {
+      position: absolute;
+      display: grid;
+      width: 58px;
+      height: 58px;
+      place-items: center;
+      border: 2px solid var(--rose);
+      border-radius: 50%;
+      background: #ffffff;
+      color: var(--rose-dark);
+    }
+
+    .person-card.left { left: 26px; bottom: 18px; }
+    .person-card.right { right: 34px; top: 18px; border-color: var(--teal-dark); color: var(--teal-dark); }
+
+    .face {
+      width: 14px;
+      height: 14px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+    }
+
+    .shoulder {
+      width: 28px;
+      height: 13px;
+      margin-top: -20px;
+      border: 2px solid currentColor;
+      border-top: 0;
+      border-radius: 0 0 24px 24px;
+    }
+
+    .signal-chip {
+      position: absolute;
+      min-height: 25px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f4edf0;
+      color: var(--rose-dark);
+      font-size: 0.72rem;
+      font-weight: 800;
+      box-shadow: 0 10px 20px rgba(101, 70, 83, 0.08);
+    }
+
+    .chip-a { top: 16px; left: 94px; }
+    .chip-b { right: 98px; bottom: 18px; }
+    .chip-c { top: 46px; left: 48%; transform: translateX(-50%); }
+
+    .scene-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      display: grid;
+      gap: 7px;
+      min-height: 70px;
+      padding: 12px;
+    }
+
+    .metric span {
+      color: var(--rose);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .metric strong {
+      font-size: 1.42rem;
+      line-height: 1;
+    }
+
+    .lens-layout {
+      grid-template-columns: minmax(0, 1.55fr) minmax(360px, 0.85fr);
+      align-items: start;
+    }
+
+    .question-panel, .result-panel { min-height: 590px; }
+
+    .question-panel {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .panel-heading {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+    }
+
+    .panel-note {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .question-sections {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .question-section {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid rgba(138, 102, 116, 0.14);
+      border-radius: 8px;
+      background: #fbf8f9;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    label, .choice-block, .slider-field {
+      display: grid;
+      gap: 5px;
+    }
+
+    label span, .section-label span, .slider-field span {
+      color: var(--plum);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    select {
+      width: 100%;
+      min-height: 38px;
+      padding: 0 30px 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--foreground);
+      outline: none;
+      font-size: 0.84rem;
+    }
+
+    .section-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-label small {
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      min-height: 30px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #ffffff;
+      color: var(--plum);
+      cursor: pointer;
+      padding: 0 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .chip.selected {
+      border-color: rgba(138, 102, 116, 0.5);
+      background: #f4edf0;
+      color: var(--rose-dark);
+    }
+
+    .slider-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .slider-field {
+      min-height: 70px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbf8f9;
+    }
+
+    .slider-field span {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--rose);
+    }
+
+    .primary-action, .export-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--rose-dark);
+      color: white;
+      cursor: pointer;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .primary-action { width: 100%; }
+
+    .result-panel {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      position: sticky;
+      top: 12px;
+      padding: 18px;
+      background: linear-gradient(160deg, #ffffff 0%, #f8f5f6 100%);
+    }
+
+    .result-placeholder {
+      display: grid;
+      gap: 14px;
+    }
+
+    .placeholder-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .placeholder-tags span {
+      min-height: 30px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #f4edf0;
+      color: var(--rose-dark);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .score-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .score-explainer {
+      display: grid;
+      gap: 6px;
+      padding: 12px;
+      border: 1px solid rgba(138, 102, 116, 0.16);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .score-explainer div, .bar-copy, .signal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .score-explainer div {
+      color: var(--rose-dark);
+      font-weight: 900;
+    }
+
+    .score-explainer p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .share-card {
+      min-height: 130px;
+      padding: 16px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(138, 102, 116, 0.96), rgba(75, 52, 64, 0.9));
+      color: white;
+    }
+
+    .share-card span {
+      display: block;
+      margin-bottom: 14px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      opacity: 0.84;
+    }
+
+    .share-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.4rem;
+    }
+
+    .share-card p {
+      color: rgba(255, 255, 255, 0.86);
+      line-height: 1.45;
+    }
+
+    .dashboard-layout {
+      display: grid;
+      gap: 12px;
+    }
+
+    .dashboard-top {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .metric-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .play-grid {
+      grid-template-columns: 1.05fr 1.2fr 1.1fr 1.1fr;
+    }
+
+    .dashboard-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .dashboard-layout .panel, .donut-card { padding: 14px; }
+
+    .donut-card {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      align-items: center;
+      min-height: 150px;
+      gap: 12px;
+    }
+
+    .donut {
+      display: grid;
+      width: 88px;
+      height: 88px;
+      place-items: center;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, var(--cream) 0 54%, transparent 55%),
+        conic-gradient(var(--rose) 0 var(--value), rgba(138, 102, 116, 0.16) var(--value) 360deg);
+    }
+
+    .donut strong {
+      margin-top: 10px;
+      color: var(--rose-dark);
+      font-size: 1.55rem;
+      line-height: 0.85;
+    }
+
+    .donut span {
+      margin-top: -22px;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+    }
+
+    .donut-card p, .movement-panel p {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+
+    .signal-pair {
+      display: grid;
+      gap: 8px;
+    }
+
+    .signal-card {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid rgba(138, 102, 116, 0.16);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .signal-head {
+      color: var(--plum);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .signal-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 10px);
+      gap: 6px;
+    }
+
+    .signal-grid span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(138, 102, 116, 0.12);
+    }
+
+    .signal-grid .on:nth-child(4n+1), .bubble.tone-0 { background: var(--rose); }
+    .signal-grid .on:nth-child(4n+2), .bubble.tone-1 { background: var(--teal); }
+    .signal-grid .on:nth-child(4n+3), .bubble.tone-2 { background: var(--coral); }
+    .signal-grid .on:nth-child(4n+4), .bubble.tone-3 { background: var(--lemon); color: var(--plum); }
+
+    .bubble-map {
+      display: flex;
+      min-height: 120px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .bubble {
+      display: grid;
+      place-items: center;
+      align-content: center;
+      width: var(--size);
+      height: var(--size);
+      min-width: 54px;
+      min-height: 54px;
+      border-radius: 50%;
+      color: #ffffff;
+      padding: 7px;
+      text-align: center;
+    }
+
+    .bubble strong { font-size: 1rem; line-height: 1; }
+    .bubble span { max-width: 70px; font-size: 0.6rem; font-weight: 800; line-height: 1.1; }
+
+    .tension-map {
+      position: relative;
+      min-height: 142px;
+      overflow: hidden;
+      border: 1px solid rgba(138, 102, 116, 0.14);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(75, 190, 192, 0.12), transparent 50%, rgba(244, 155, 140, 0.14)),
+        #ffffff;
+    }
+
+    .axis {
+      position: absolute;
+      background: rgba(138, 102, 116, 0.26);
+    }
+
+    .axis.horizontal { right: 18px; left: 18px; top: 50%; height: 1px; }
+    .axis.vertical { top: 18px; bottom: 18px; left: 50%; width: 1px; }
+
+    .map-dot {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border: 4px solid #ffffff;
+      border-radius: 50%;
+      background: var(--rose);
+      transform: translate(-50%, 50%);
+    }
+
+    .map-label {
+      position: absolute;
+      color: rgba(54, 41, 49, 0.64);
+      font-size: 0.58rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .top-left { top: 10px; left: 10px; }
+    .top-right { top: 10px; right: 10px; }
+    .bottom-left { bottom: 10px; left: 10px; }
+    .bottom-right { right: 10px; bottom: 10px; }
+
+    .bar-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .bar-row {
+      display: grid;
+      gap: 7px;
+    }
+
+    .bar-copy {
+      color: var(--plum);
+      font-size: 0.78rem;
+    }
+
+    .bar-track {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #eadde3;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--rose);
+    }
+
+    .bar-fill.coral { background: var(--coral); }
+    .bar-fill.blue { background: var(--teal); }
+
+    .movement-panel {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      align-items: end;
+      gap: 14px;
+    }
+
+    .movement-strip {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(42px, 1fr);
+      align-items: end;
+      gap: 10px;
+      min-height: 105px;
+      padding: 10px;
+      border: 1px solid rgba(138, 102, 116, 0.14);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .movement-day {
+      display: grid;
+      justify-items: center;
+      align-items: end;
+      gap: 8px;
+    }
+
+    .movement-day span {
+      width: 100%;
+      max-width: 36px;
+      border-radius: 999px 999px 4px 4px;
+      background: linear-gradient(180deg, var(--rose), var(--coral));
+    }
+
+    .movement-day small {
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    .table-panel { overflow-x: auto; }
+
+    .intent-table {
+      min-width: 760px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 92px repeat(4, minmax(128px, 1fr));
+      min-height: 42px;
+      align-items: center;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--plum);
+    }
+
+    .table-row:last-child { border-bottom: 0; }
+    .table-row.header {
+      background: var(--vanilla);
+      color: var(--rose-dark);
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 980px) {
+      .hero-grid, .lens-layout, .question-sections, .play-grid, .dashboard-grid, .movement-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .result-panel { position: static; }
+    }
+
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 18px, 480px); }
+      .nav, .dashboard-top { display: grid; grid-template-columns: 1fr; }
+      .tabs, .tabs button, .export-link { width: 100%; }
+      .form-grid, .slider-grid, .metric-grid, .donut-card { grid-template-columns: 1fr; }
+      h1 { font-size: clamp(2rem, 13vw, 3.4rem); }
+      .panel-heading { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="nav">
+      <div class="brand">Dote</div>
+      <div class="tabs" aria-label="Dote sections">
+        <button class="tab active" data-tab="lens" type="button">My Dating Lens</button>
+        <button class="tab" data-tab="dashboard" type="button">Dashboard</button>
+      </div>
+    </nav>
+
+    <section class="hero-grid">
+      <div>
+        <p class="eyebrow">Recent dating scene, decoded</p>
+        <h1>Dating has become mixed signals, filters, timelines, and almosts.</h1>
+        <p class="hero-copy">Dote turns anonymous preferences into a personal dating read and a dashboard of what people are actually choosing right now. No names, photos, phone numbers, emails, exact workplaces, or exact addresses.</p>
+      </div>
+      <div class="hero-panel">
+        <div class="dating-scene" aria-hidden="true">
+          <div class="scene-line"></div>
+          <div class="person-card left"><span class="face"></span><span class="shoulder"></span></div>
+          <div class="person-card right"><span class="face"></span><span class="shoulder"></span></div>
+          <div class="signal-chip chip-a">slow replies</div>
+          <div class="signal-chip chip-b">soft launch?</div>
+          <div class="signal-chip chip-c">real intent</div>
+        </div>
+        <div class="scene-stats">
+          <div class="metric"><span>Responses</span><strong id="heroTotal">0</strong></div>
+          <div class="metric"><span>Avg standards</span><strong id="heroStandards">0/100</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="lensView">
+      <form class="lens-layout" id="doteForm">
+        <section class="panel question-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Your anonymous row</p>
+              <h2>My Dating Lens</h2>
+            </div>
+            <span class="panel-note">2 minutes, no identity fields</span>
+          </div>
+
+          <div class="question-sections">
+            <section class="question-section">
+              <h3>About your dating context</h3>
+              <div class="form-grid" id="contextFields"></div>
+            </section>
+
+            <section class="question-section">
+              <h3>How you date</h3>
+              <div class="form-grid" id="datingFields"></div>
+              <div id="traitChoices"></div>
+              <div id="dealbreakerChoices"></div>
+              <div class="slider-grid" id="sliderFields"></div>
+            </section>
+          </div>
+
+          <button class="primary-action" type="submit">Enter</button>
+        </section>
+
+        <aside class="panel result-panel" id="resultPanel"></aside>
+      </form>
+    </section>
+
+    <section id="dashboardView" class="dashboard-layout hidden">
+      <div class="dashboard-top">
+        <div>
+          <p class="eyebrow">All anonymous responses</p>
+          <h2>Dote dashboard</h2>
+          <p class="muted">This static GitHub version summarizes responses saved in this browser. For shared public data, connect the same fields to a hosted database or Google Sheet.</p>
+        </div>
+        <span class="panel-note">Dashboard view only</span>
+      </div>
+
+      <div class="metric-grid" id="metricGrid"></div>
+      <div class="play-grid" id="playGrid"></div>
+      <div class="dashboard-grid" id="dashboardGrid"></div>
+      <article class="panel movement-panel" id="movementPanel"></article>
+      <article class="panel table-panel" id="ageIntentPanel"></article>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "dote_static_responses_v1";
+
+    const fields = {
+      ageBand: ["18-24", "25-29", "30-34", "35-39", "40+"],
+      gender: ["Woman", "Man", "Non-binary", "Prefer not to say"],
+      orientation: ["Straight", "Queer", "Bisexual", "Gay/Lesbian", "Questioning"],
+      cityType: ["Metro", "Tier 1", "Tier 2", "Moving cities", "Outside India"],
+      datingIntent: ["Exploring", "Intentional dating", "Marriage-minded", "Taking a break"],
+      marriageTimeline: ["No timeline", "1 year", "2-3 years", "4+ years", "Not sure"],
+      communicationStyle: ["Clear and warm", "Fast replies", "Low pressure", "Direct and practical"],
+      relationshipPace: ["Take it slow", "Go with the flow", "Define early", "Friends first"],
+      longDistance: ["No", "Maybe, with a plan", "Yes", "Only short-term"],
+      childrenPreference: ["Want children", "Open to children", "Do not want children", "Not sure"]
+    };
+
+    const traits = ["Emotional maturity", "Ambition", "Humor", "Kindness", "Physical chemistry", "Financial stability", "Shared values", "Family compatibility", "Intellectual curiosity", "Calm conflict style"];
+    const dealbreakers = ["Emotional unavailability", "Dishonesty", "Poor communication", "No ambition", "Different marriage intent", "Family pressure", "Lifestyle mismatch", "Substance dependence", "Political mismatch", "Unclear exclusivity"];
+    const intents = fields.datingIntent;
+    const ageBands = fields.ageBand;
+
+    const defaultForm = {
+      ageBand: "25-29",
+      gender: "Woman",
+      orientation: "Straight",
+      cityType: "Metro",
+      datingIntent: "Intentional dating",
+      marriageTimeline: "2-3 years",
+      communicationStyle: "Clear and warm",
+      relationshipPace: "Take it slow",
+      longDistance: "Maybe, with a plan",
+      childrenPreference: "Open to children",
+      topTraits: ["Emotional maturity", "Ambition", "Humor"],
+      dealbreakers: ["Emotional unavailability", "Dishonesty"],
+      openness: 58,
+      emotionalAvailability: 72,
+      selfWorkScore: 64
+    };
+
+    const sampleRows = [
+      { ...defaultForm, id: 1, createdAt: "2026-09-20T11:25:00Z", selectivenessScore: 67, flexibilityScore: 58, poolScore: 54, preferenceType: "Intentional Optimist" },
+      { ...defaultForm, id: 2, ageBand: "30-34", gender: "Man", datingIntent: "Marriage-minded", marriageTimeline: "1 year", topTraits: ["Shared values", "Kindness", "Family compatibility"], dealbreakers: ["Different marriage intent", "Poor communication"], openness: 42, emotionalAvailability: 61, selfWorkScore: 58, createdAt: "2026-09-21T09:10:00Z", selectivenessScore: 76, flexibilityScore: 42, poolScore: 43, preferenceType: "Careful Curator" },
+      { ...defaultForm, id: 3, ageBand: "25-29", cityType: "Tier 1", datingIntent: "Exploring", topTraits: ["Physical chemistry", "Humor", "Intellectual curiosity"], dealbreakers: ["Dishonesty", "Lifestyle mismatch"], openness: 78, emotionalAvailability: 54, selfWorkScore: 70, createdAt: "2026-09-23T14:42:00Z", selectivenessScore: 52, flexibilityScore: 78, poolScore: 70, preferenceType: "Curious Explorer" },
+      { ...defaultForm, id: 4, ageBand: "35-39", gender: "Man", topTraits: ["Calm conflict style", "Shared values", "Emotional maturity"], dealbreakers: ["Unclear exclusivity", "Poor communication"], openness: 63, emotionalAvailability: 82, selfWorkScore: 76, createdAt: "2026-09-25T18:30:00Z", selectivenessScore: 61, flexibilityScore: 63, poolScore: 61, preferenceType: "Secure Builder" }
+    ];
+
+    let formState = structuredClone(defaultForm);
+    let result = null;
+    let rows = loadRows();
+
+    function clamp(value) {
+      return Math.max(0, Math.min(100, Math.round(value)));
+    }
+
+    function scoreProfile(form) {
+      const hardFilters = form.dealbreakers.length * 7;
+      const marriagePressure = form.datingIntent === "Marriage-minded" ? 12 : form.datingIntent === "Exploring" ? -6 : 4;
+      const distanceFlex = form.longDistance === "Yes" ? -8 : form.longDistance === "No" ? 7 : 0;
+      const opennessRelief = Math.round((100 - form.openness) * 0.2);
+      const selectivenessScore = clamp(30 + hardFilters + marriagePressure + distanceFlex + opennessRelief);
+      const flexibilityScore = clamp(form.openness * 0.72 + (form.longDistance === "Yes" ? 16 : 4));
+      const poolScore = clamp(100 - selectivenessScore * 0.55 + flexibilityScore * 0.22);
+      const preferenceType = form.emotionalAvailability >= 76 && form.selfWorkScore >= 68
+        ? "Secure Builder"
+        : form.openness >= 72
+          ? "Curious Explorer"
+          : selectivenessScore >= 72
+            ? "Careful Curator"
+            : "Intentional Optimist";
+      return { selectivenessScore, flexibilityScore, poolScore, preferenceType };
+    }
+
+    function loadRows() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        return saved.length ? saved : sampleRows;
+      } catch {
+        return sampleRows;
+      }
+    }
+
+    function saveRows() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+    }
+
+    function average(list, key) {
+      if (!list.length) return 0;
+      return Math.round(list.reduce((sum, row) => sum + row[key], 0) / list.length);
+    }
+
+    function countList(labels) {
+      const counts = {};
+      labels.forEach((label) => counts[label] = (counts[label] || 0) + 1);
+      return Object.entries(counts)
+        .map(([label, value]) => ({ label, value }))
+        .sort((a, b) => b.value - a.value || a.label.localeCompare(b.label));
+    }
+
+    function buildDashboard() {
+      const ageIntent = {};
+      rows.forEach((row) => {
+        ageIntent[row.ageBand] ||= {};
+        ageIntent[row.ageBand][row.datingIntent] = (ageIntent[row.ageBand][row.datingIntent] || 0) + 1;
+      });
+      return {
+        total: rows.length,
+        updatedAt: rows[0]?.createdAt || null,
+        avgSelectiveness: average(rows, "selectivenessScore"),
+        avgFlexibility: average(rows, "flexibilityScore"),
+        avgPool: average(rows, "poolScore"),
+        traitCounts: countList(rows.flatMap((row) => row.topTraits)).slice(0, 7),
+        dealbreakerCounts: countList(rows.flatMap((row) => row.dealbreakers)).slice(0, 7),
+        intentCounts: countList(rows.map((row) => row.datingIntent)),
+        cityCounts: countList(rows.map((row) => row.cityType)),
+        movement: countList(rows.map((row) => new Date(row.createdAt).toLocaleDateString("en", { month: "short", day: "numeric" }))).slice(-8),
+        ageIntent
+      };
+    }
+
+    function selectField(name, label, options) {
+      return `<label><span>${label}</span><select name="${name}">${options.map((option) => `<option ${formState[name] === option ? "selected" : ""}>${option}</option>`).join("")}</select></label>`;
+    }
+
+    function multiChoice(id, label, options, selected, max) {
+      return `<div class="choice-block"><div class="section-label"><span>${label}</span><small>Choose up to ${max}</small></div><div class="chips">${options.map((option) => `<button class="chip ${selected.includes(option) ? "selected" : ""}" data-choice="${id}" data-value="${option}" type="button">${option}</button>`).join("")}</div></div>`;
+    }
+
+    function slider(name, label) {
+      return `<label class="slider-field"><span>${label}<strong>${formState[name]}</strong></span><input name="${name}" min="0" max="100" value="${formState[name]}" type="range"></label>`;
+    }
+
+    function datingScene() {
+      return `<div class="dating-scene" aria-hidden="true"><div class="scene-line"></div><div class="person-card left"><span class="face"></span><span class="shoulder"></span></div><div class="person-card right"><span class="face"></span><span class="shoulder"></span></div><div class="signal-chip chip-a">slow replies</div><div class="signal-chip chip-b">soft launch?</div><div class="signal-chip chip-c">real intent</div></div>`;
+    }
+
+    function renderForm() {
+      document.getElementById("contextFields").innerHTML = [
+        selectField("ageBand", "Age band", fields.ageBand),
+        selectField("gender", "Gender", fields.gender),
+        selectField("orientation", "Orientation", fields.orientation),
+        selectField("cityType", "City context", fields.cityType),
+        selectField("datingIntent", "Dating intent", fields.datingIntent),
+        selectField("marriageTimeline", "Marriage timeline", fields.marriageTimeline)
+      ].join("");
+
+      document.getElementById("datingFields").innerHTML = [
+        selectField("communicationStyle", "Communication", fields.communicationStyle),
+        selectField("relationshipPace", "Pace", fields.relationshipPace),
+        selectField("longDistance", "Long distance", fields.longDistance),
+        selectField("childrenPreference", "Children", fields.childrenPreference)
+      ].join("");
+
+      document.getElementById("traitChoices").innerHTML = multiChoice("topTraits", "Traits you prioritize", traits, formState.topTraits, 3);
+      document.getElementById("dealbreakerChoices").innerHTML = multiChoice("dealbreakers", "Dealbreakers", dealbreakers, formState.dealbreakers, 3);
+      document.getElementById("sliderFields").innerHTML = [
+        slider("openness", "Open to surprises"),
+        slider("emotionalAvailability", "Emotionally available"),
+        slider("selfWorkScore", "Working on yourself")
+      ].join("");
+    }
+
+    function renderResult() {
+      const panel = document.getElementById("resultPanel");
+      if (!result) {
+        panel.innerHTML = `<div class="result-placeholder">${datingScene()}<p class="eyebrow">Result appears here</p><h2>Your dating read is waiting.</h2><p class="muted">Answer the questions on the left and press Enter. Dote will turn your preferences into a simple read on what it might feel like to date you.</p><div class="placeholder-tags"><span>standards</span><span>openness</span><span>dating pool</span></div></div>`;
+        return;
+      }
+
+      panel.innerHTML = `
+        <p class="eyebrow">What it is like to date you</p>
+        <h2>${result.preferenceType}</h2>
+        <p class="muted">Dating you likely feels ${result.flexibilityScore >= 65 ? "open and easy to explore" : "intentional and clearly filtered"}. Your strongest signal is ${(result.topTraits[0] || "shared values").toLowerCase()}.</p>
+        <div class="score-stack">
+          ${scoreBlock("Standards", result.selectivenessScore, "How specific your filters are. Higher means fewer people pass the first screen.")}
+          ${scoreBlock("Openness", result.flexibilityScore, "How willing you are to consider someone outside your usual pattern.")}
+          ${scoreBlock("Dating pool", result.poolScore, "A rough estimate of how wide your compatible pool may feel.")}
+        </div>
+        <div class="share-card"><span>Dote share card</span><strong>${result.preferenceType}</strong><p>Top traits: ${result.topTraits.join(", ")}. Biggest friction: ${(result.dealbreakers[0] || "unclear priorities").toLowerCase()}.</p></div>
+      `;
+    }
+
+    function scoreBlock(label, value, detail) {
+      return `<div class="score-explainer"><div><span>${label}</span><strong>${value}/100</strong></div><p>${detail}</p></div>`;
+    }
+
+    function barList(items, color = "") {
+      const max = Math.max(...items.map((item) => item.value), 1);
+      return `<div class="bar-list">${items.map((item) => `<div class="bar-row"><div class="bar-copy"><span>${item.label}</span><strong>${item.value}</strong></div><div class="bar-track"><div class="bar-fill ${color}" style="width:${Math.max(8, item.value / max * 100)}%"></div></div></div>`).join("")}</div>`;
+    }
+
+    function signalDots(label, value) {
+      const active = Math.round(value / 100 * 24);
+      return `<div class="signal-card"><div class="signal-head"><span>${label}</span><strong>${value}/100</strong></div><div class="signal-grid">${Array.from({ length: 24 }, (_, index) => `<span class="${index < active ? "on" : ""}"></span>`).join("")}</div></div>`;
+    }
+
+    function renderDashboard() {
+      const data = buildDashboard();
+      document.getElementById("heroTotal").textContent = data.total;
+      document.getElementById("heroStandards").textContent = `${data.avgSelectiveness}/100`;
+      document.getElementById("metricGrid").innerHTML = [
+        metric("Total responses", data.total),
+        metric("Standards", `${data.avgSelectiveness}/100`),
+        metric("Openness", `${data.avgFlexibility}/100`),
+        metric("Dating pool", `${data.avgPool}/100`)
+      ].join("");
+
+      document.getElementById("playGrid").innerHTML = `
+        <article class="donut-card"><div class="donut" style="--value:${data.avgPool * 3.6}deg"><strong>${data.avgPool}</strong><span>/100</span></div><div><h3>Market openness</h3><p>How wide the average dating pool looks after preferences and flexibility are combined.</p></div></article>
+        <article class="panel"><h3>Connection signals</h3><div class="signal-pair">${signalDots("Openness", data.avgFlexibility)}${signalDots("Standards", data.avgSelectiveness)}</div></article>
+        <article class="panel"><h3>Intent constellation</h3><div class="bubble-map">${bubbles(data.intentCounts)}</div></article>
+        <article class="panel"><h3>Preference tension</h3>${tensionMap(data.avgSelectiveness, data.avgFlexibility)}</article>
+      `;
+
+      document.getElementById("dashboardGrid").innerHTML = `
+        <article class="panel"><h3>Most desired traits</h3>${barList(data.traitCounts)}</article>
+        <article class="panel"><h3>Most common dealbreakers</h3>${barList(data.dealbreakerCounts, "coral")}</article>
+        <article class="panel"><h3>Dating intent</h3>${barList(data.intentCounts, "blue")}</article>
+        <article class="panel"><h3>City context</h3>${barList(data.cityCounts)}</article>
+      `;
+
+      document.getElementById("movementPanel").innerHTML = `<div><h3>Response movement</h3><p>Each column is a day responses appeared in this browser dataset.</p></div><div class="movement-strip">${movement(data.movement.length ? data.movement : [{ label: "Today", value: data.total }])}</div>`;
+      renderAgeIntent(data.ageIntent);
+    }
+
+    function metric(label, value) {
+      return `<div class="metric"><span>${label}</span><strong>${value}</strong></div>`;
+    }
+
+    function bubbles(items) {
+      const max = Math.max(...items.map((item) => item.value), 1);
+      return items.map((item, index) => `<div class="bubble tone-${index % 4}" style="--size:${54 + item.value / max * 46}px"><strong>${item.value}</strong><span>${item.label}</span></div>`).join("");
+    }
+
+    function tensionMap(selectiveness, flexibility) {
+      return `<div class="tension-map"><span class="axis horizontal"></span><span class="axis vertical"></span><div class="map-dot" style="left:${Math.max(8, Math.min(92, selectiveness))}%;bottom:${Math.max(8, Math.min(92, flexibility))}%"></div><div class="map-label top-left">Open heart</div><div class="map-label top-right">High standards</div><div class="map-label bottom-left">Loose brief</div><div class="map-label bottom-right">Narrow brief</div></div>`;
+    }
+
+    function movement(items) {
+      const max = Math.max(...items.map((item) => item.value), 1);
+      return items.map((item) => `<div class="movement-day"><span style="height:${24 + item.value / max * 76}px"></span><small>${item.label}</small></div>`).join("");
+    }
+
+    function renderAgeIntent(ageIntent) {
+      document.getElementById("ageIntentPanel").innerHTML = `<div class="panel-heading"><h3>Age group by intent</h3><span class="panel-note">Browser dataset</span></div><div class="intent-table"><div class="table-row header"><span>Age</span>${intents.map((intent) => `<span>${intent}</span>`).join("")}</div>${ageBands.map((age) => `<div class="table-row"><strong>${age}</strong>${intents.map((intent) => `<span>${ageIntent[age]?.[intent] || 0}</span>`).join("")}</div>`).join("")}</div>`;
+    }
+
+    function updateStateFromInputs() {
+      document.querySelectorAll("select, input[type='range']").forEach((input) => {
+        if (input.type === "range") formState[input.name] = Number(input.value);
+        else formState[input.name] = input.value;
+      });
+    }
+
+    function toggleChoice(key, value, max) {
+      const list = formState[key];
+      if (list.includes(value)) formState[key] = list.filter((item) => item !== value);
+      else formState[key] = [...list, value].slice(-max);
+      renderForm();
+      bindFormEvents();
+    }
+
+    function bindFormEvents() {
+      document.querySelectorAll("select, input[type='range']").forEach((input) => {
+        input.addEventListener("input", () => {
+          updateStateFromInputs();
+          renderForm();
+          bindFormEvents();
+        }, { once: true });
+      });
+      document.querySelectorAll("[data-choice]").forEach((button) => {
+        button.addEventListener("click", () => {
+          toggleChoice(button.dataset.choice, button.dataset.value, button.dataset.choice === "topTraits" ? 3 : 3);
+        });
+      });
+    }
+
+    document.getElementById("doteForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      updateStateFromInputs();
+      const scored = scoreProfile(formState);
+      result = { ...formState, ...scored, id: Date.now(), createdAt: new Date().toISOString() };
+      rows = [result, ...rows];
+      saveRows();
+      renderResult();
+      renderDashboard();
+    });
+
+    document.querySelectorAll(".tab").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
+        button.classList.add("active");
+        document.getElementById("lensView").classList.toggle("hidden", button.dataset.tab !== "lens");
+        document.getElementById("dashboardView").classList.toggle("hidden", button.dataset.tab !== "dashboard");
+        renderDashboard();
+      });
+    });
+
+    renderForm();
+    bindFormEvents();
+    renderResult();
+    renderDashboard();
+  </script>
+</body>
+</html>
